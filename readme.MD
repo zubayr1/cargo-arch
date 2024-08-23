@@ -22,13 +22,15 @@ Build and Install
 
 Build and install the cargo-arch command globally using Cargo:
 
-cargo install --path . --force
+cargo install --path . 
+
 This will compile the project and install the cargo-arch executable in your Cargo bin directory (typically located at ~/.cargo/bin).
 
 ## Usage
 To create a new Arch project, use the following command:
 
 cargo-arch new <project_name>
+
 Replace <project_name> with your desired project name. This command will create a new directory with the appropriate files and structure.
 
 ### Example Usage
