@@ -38,11 +38,7 @@ fn create_boilerplate(project_name: &str) {
 
     // Create Cargo.toml files
     let root_cargo_toml = format!(
-        r#"[workspace]
-members = [
-    "program",
-]
-
+        r#"
 [package]
 name = "{0}-program"
 version = "0.1.0"
@@ -55,15 +51,12 @@ sdk = {{ path = "../../sdk" }}
 bitcoincore-rpc = "0.18.0"
 hex = "0.4.3"
 borsh = {{ version = "1.4.0", features = ["derive"] }}
-
-[build-dependencies]
-risc0-build = {{ version = "0.21.0" }}
+bitcoin = {{ version = "0.31.0", features = ["serde", "rand"] }}
+log = "0.4"
+env_logger = "0.10"
 
 [dev-dependencies]
 serial_test = "3.1.1"
-
-[package.metadata.risc0]
-methods = ["program"]
 "#,
         project_name
     );
@@ -80,14 +73,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hex = "0.4.3"
-anyhow = "1.0.82"
-serde_json = "1.0.108"
-borsh = {{ version = "1.4.0", features = ["derive"] }}
-serde = {{ version = "1.0", features = ["derive"], default-features = false  }}
-bitcoin = {{ git = "https://github.com/Arch-Network/bitcoin-arch-v2" }}
-risc0-zkvm = {{ version = "0.21.0", default-features = false, features = ["std"] }}
-sdk = {{ path = "../sdk" }}
+arch_program = {{ path = "../../../program" }}
+borsh = {{ version = "1.5.1", features = ["derive"] }}
+
+[lib]
+crate-type = ["cdylib", "lib"]
 "#,
         project_name
     );
@@ -109,23 +99,15 @@ sdk = {{ path = "../sdk" }}
 
     fs::write(project_dir.join("src/lib.rs"), lib_rs_content).expect("Failed to write lib.rs");
 
-    // Create build.rs file
-    let build_rs_content = r#"use std::fs;
+    // Create program.json file
+    let program_json_content = "7b542bbf2fc7dc5363bfae09342908dcb89a0836bb913824ad9d61e02903df69";
+    fs::write(project_dir.join("program.json"), program_json_content)
+        .expect("Failed to write program.json");
 
-fn main() {
-    let methods = risc0_build::embed_methods();
-    println!("BUILD");
-    for method in &methods {
-        println!("Method Name: {}", method.name);
-        println!("Method ELF: {:?}", method.elf);
-    }
-    for method in methods {
-        let _ = fs::write(format!("target/{}.elf", method.name), method.elf);
-    }
-}
-"#;
-
-    fs::write(project_dir.join("build.rs"), build_rs_content).expect("Failed to write build.rs");
+    // Create caller.json file
+    let caller_json_content = "445564bf2cb08cb4d389516d5143fe208497754bf98c55438354e174b9860bb8";
+    fs::write(project_dir.join("caller.json"), caller_json_content)
+        .expect("Failed to write caller.json");
 
     println!("Created new Arch project at `{}`", project_name);
 }
