@@ -99,15 +99,5 @@ crate-type = ["cdylib", "lib"]
 
     fs::write(project_dir.join("src/lib.rs"), lib_rs_content).expect("Failed to write lib.rs");
 
-    // Create program.json file
-    let program_json_content = "7b542bbf2fc7dc5363bfae09342908dcb89a0836bb913824ad9d61e02903df69";
-    fs::write(project_dir.join("program.json"), program_json_content)
-        .expect("Failed to write program.json");
-
-    // Create caller.json file
-    let caller_json_content = "445564bf2cb08cb4d389516d5143fe208497754bf98c55438354e174b9860bb8";
-    fs::write(project_dir.join("caller.json"), caller_json_content)
-        .expect("Failed to write caller.json");
-
     println!("Created new Arch project at `{}`", project_name);
 }
